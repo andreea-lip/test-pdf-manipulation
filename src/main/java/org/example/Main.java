@@ -53,7 +53,7 @@ public class Main {
     // also needs absolute path to work (for now at least :) )
     // imaginea rezultata va fi in /output/diagram.png
     public static void pdfboximagecrop() throws Exception {
-        File file = new File("/src/main/resources/test-pdf-3.pdf");
+        File file = new File("C:/Users/andreea.lipan/OneDrive - ACCESA/Projects/test-pdf-manipulation/src/main/resources/test-pdf-3.pdf");
         PDDocument document = PDDocument.load(file);
 
         PDPage page = document.getPage(1);
@@ -72,9 +72,30 @@ public class Main {
         PDFRenderer renderer = new PDFRenderer(document);
         BufferedImage diagramImg = renderer.renderImageWithDPI(1, 300);
 
-        ImageIO.write(diagramImg, "png", new File("/src/main/resources/output/diagram.png"));
+        ImageIO.write(diagramImg, "png", new File("C:/Users/andreea.lipan/OneDrive - ACCESA/Projects/test-pdf-manipulation/src/main/resources/output/diagram.png"));
 
         document.close();
+    }
+
+    public static void pdfImageCropOption2() throws Exception {
+        File file = new File("C:/Users/andreea.lipan/OneDrive - ACCESA/Projects/test-pdf-manipulation/src/main/resources/test-pdf-3.pdf");
+        PDDocument document = PDDocument.load(file);
+
+        PDFRenderer renderer = new PDFRenderer(document);
+        BufferedImage fullPage = renderer.renderImageWithDPI(1, 300);
+
+        // Crop diagram area (coords in pixels this time)
+        //int x = 630;   // startX
+        //int y = 690;   // startY
+        //int w = 230;
+        //int h = 1800;
+        int x = 550;   // startX
+        int y = 590;   // startY
+        int w = 400;
+        int h = 2000;
+        BufferedImage diagramImg = fullPage.getSubimage(x, y, w, h);
+
+        ImageIO.write(diagramImg, "png", new File("C:/Users/andreea.lipan/OneDrive - ACCESA/Projects/test-pdf-manipulation/src/main/resources/output/diagram2.png"));
     }
 
     // take only the text from the pdf
@@ -101,8 +122,20 @@ public class Main {
 
     // prog start
     public static void main(String[] args) throws Exception {
+        String absolutePath = "C:/Users/andreea.lipan/OneDrive - ACCESA/Projects/test-pdf-manipulation";
 
-        pdfboximagecrop();
+        PdfDataExtractor extractor = new PdfDataExtractor(absolutePath + "/src/main/resources/test-pdf-3.pdf");
 
+        int[][] matrix = extractor.extractData();
+
+        // Print result
+        for (int[] ints : matrix) {
+            for (int anInt : ints) {
+                System.out.print(anInt + " ");
+            }
+            System.out.println();
+        }
+
+        System.out.println(matrix.length);
     }
 }
